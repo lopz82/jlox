@@ -84,7 +84,9 @@ public class Scanner {
                 addToken(SEMICOLON);
                 break;
             case '*':
-                addToken(STAR);
+                if (!match('/')) {
+                    addToken(STAR);
+                }
                 break;
             case '!':
                 addToken(match('=') ? BANG_EQUAL : BANG);
@@ -102,6 +104,8 @@ public class Scanner {
                 if (match('/')) {
                     // A comment goes until the end of the line.
                     while (peek() != '\n' && !isAtEnd()) advance();
+                } else if (match('*')) {
+                    while (peek() != '*') advance();
                 } else {
                     addToken(SLASH);
                 }
