@@ -13,6 +13,7 @@ public class Scanner {
     private int start = 0;
     private int current = 0;
     private int line = 1;
+    private boolean inMultilineComment = false;
     private static final Map<String, TokenType> keywords;
 
     static {
@@ -84,8 +85,10 @@ public class Scanner {
                 addToken(SEMICOLON);
                 break;
             case '*':
-                if (!match('/')) {
+                if (!inMultilineComment) {
                     addToken(STAR);
+                } else if (match('/')) {
+                    inMultilineComment = false;
                 }
                 break;
             case '!':
@@ -105,6 +108,7 @@ public class Scanner {
                     // A comment goes until the end of the line.
                     while (peek() != '\n' && !isAtEnd()) advance();
                 } else if (match('*')) {
+                    inMultilineComment = true;
                     while (peek() != '*') advance();
                 } else {
                     addToken(SLASH);
