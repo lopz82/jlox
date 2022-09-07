@@ -85,11 +85,8 @@ public class Scanner {
                 addToken(SEMICOLON);
                 break;
             case '*':
-                if (!inMultilineComment) {
-                    addToken(STAR);
-                } else if (match('/')) {
-                    inMultilineComment = false;
-                }
+                if (!inMultilineComment) addToken(STAR);
+                else if (match('/')) inMultilineComment = false;
                 break;
             case '!':
                 addToken(match('=') ? BANG_EQUAL : BANG);
@@ -110,9 +107,7 @@ public class Scanner {
                 } else if (match('*')) {
                     inMultilineComment = true;
                     while (peek() != '*') advance();
-                } else {
-                    addToken(SLASH);
-                }
+                } else addToken(SLASH);
                 break;
             case ' ':
             case '\r':
@@ -126,13 +121,9 @@ public class Scanner {
                 string();
                 break;
             default:
-                if (isDigit(c)) {
-                    number();
-                } else if (isAlpha(c)) {
-                    identifier();
-                } else {
-                    Lox.error(line, "unexpected character.");
-                }
+                if (isDigit(c)) number();
+                else if (isAlpha(c)) identifier();
+                else Lox.error(line, "unexpected character.");
                 break;
         }
     }
